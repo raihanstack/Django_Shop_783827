@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import MinValueValidator
 from django.utils.text import slugify
 from django.urls import reverse
+from cloudinary.models import CloudinaryField
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -23,14 +24,13 @@ class Category(models.Model):
     def get_absolute_url(self):
         return reverse('category', kwargs={'slug': self.slug})
 
-
 class Product(models.Model):
     name = models.CharField(max_length=200)
     slug = models.SlugField(unique=True, blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products', null=True, blank=True)
     short_description = models.TextField(blank=True)
     description = models.TextField(blank=True)
-    price = models.IntegerField(validators=[MinValueValidator(0)])
+    price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
     sku = models.CharField(max_length=50, unique=True)
     stock_quantity = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True)
@@ -109,9 +109,9 @@ class Color(models.Model):
 
 class Image(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to='products/')
+    image = CloudinaryField('image')
     alt_text = models.CharField(max_length=200, blank=True)
-    is_primary = models.BooleanField(default=False)
+    is_primary = models.BooleanField(default=True)
 
     def __str__(self):
         return f"{self.product.name} - Image"

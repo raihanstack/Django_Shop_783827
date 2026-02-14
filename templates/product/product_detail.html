@@ -4,7 +4,7 @@
 {% block title %}{{ product.name }} - Nixagone{% endblock title %} 
 {% block main_content %}
 <section
-  class="border-b container flex-grow lg:grid lg:grid-cols-2 lg:py-10 mx-auto py-5"
+  class="container flex-grow py-5 mx-auto border-b lg:grid lg:grid-cols-2 lg:py-10"
   x-data="{
     quantity: 1,
     selectedSize: null,
@@ -53,43 +53,43 @@
       :src="selectedImage" 
       alt="{{ product.name }}" 
     />
-    <div class="gap-4 flex mt-3">
-        
-        {% for image in product.get_all_images %}
-            <div 
-              class="cursor-pointer"
-              @click="selectImage('{{ image.image.url }}')"
-            >
-              <img
-                class="w-full aspect-square max-w-28 object-cover"
-                :class="{ 'ring-2 ring-black': selectedImage === '{{ image.image.url }}' }"
-                src="{{ image.image.url }}"
-                alt="product image"
-              />
-            </div>
+
+    <div class="flex gap-4 mt-3">
+        {{% for image in product.get_all_images %}
+          <div 
+            class="cursor-pointer"
+            @click="selectImage('{{ image.image.url }}')"
+          >
+            <img
+              class="object-cover w-full aspect-square max-w-28"
+              :class="{ 'ring-2 ring-black': selectedImage === '{{ image.image.url }}' }"
+              src="{{ image.image.url }}"
+              alt="product image"
+            />
+          </div>
         {% endfor %}
     </div>
   </div>
-  <div class="lg:px-5 mx-auto px-2 lg:pt-0 pt-8">
-    <h2 class="font-bold lg:pt-0 pt-3 text-2xl">{{ product.name }}</h2>
-    <p class="font-bold mt-5">
+  <div class="px-2 pt-8 mx-auto lg:px-5 lg:pt-0">
+    <h2 class="pt-3 text-2xl font-bold lg:pt-0">{{ product.name }}</h2>
+    <p class="mt-5 font-bold">
       {% stock_status product show_stock_count=True %}
     </p>
-    <p class="text-gray-500 mt-2">SKU: <span class="font-normal">{{ product.sku }}</span></p>
-    <p class="text-gray-500 mt-2">Category: <span class="font-normal">{{ product.category }}</span></p>
-    <p class="font-bold mt-4 text-4xl text-green-600">
+    <p class="mt-2 text-gray-500">SKU: <span class="font-normal">{{ product.sku }}</span></p>
+    <p class="mt-2 text-gray-500">Category: <span class="font-normal">{{ product.category }}</span></p>
+    <p class="mt-4 text-4xl font-bold text-green-600">
       {{ product.price|taka }}
     </p>
-    <p class="leading-6 pt-5 text-gray-700">
+    <p class="pt-5 leading-6 text-gray-700">
         {{ product.short_description|safe }}
     </p>
     {% if product.sizes.exists %}
     <div class="mt-6">
-      <p class="pb-2 text-gray-500 text-xs">Size</p>
+      <p class="pb-2 text-xs text-gray-500">Size</p>
       <div class="flex gap-2">
         {% for size in product.sizes.all %}
           <div
-            class="active:ring-2 active:ring-gray-500 border cursor-pointer duration-100 flex focus:ring-2 focus:ring-gray-500 h-8 hover:bg-neutral-100 items-center justify-center min-w-8 transition-colors"
+            class="flex items-center justify-center h-8 transition-colors duration-100 border cursor-pointer active:ring-2 active:ring-gray-500 focus:ring-2 focus:ring-gray-500 hover:bg-neutral-100 min-w-8"
             :class="{ 'ring-2 ring-offset-1 ring-black': selectedSize === '{{ size.id }}' }"
             @click="selectSize('{{ size.id }}')"
           >
@@ -101,8 +101,8 @@
     {% endif %}
     {% if product.colors.exists %}
     <div class="mt-6">
-      <p class="pb-2 text-gray-500 text-xs">Color</p>
-      <div class="flex gap-2 relative">
+      <p class="pb-2 text-xs text-gray-500">Color</p>
+      <div class="relative flex gap-2">
         {% for color in product.colors.all %}
           <div
             class="group active:ring-2 active:ring-gray-500 border {% if color.name|lower == "white" %} border-gray-300 {% else %} border-[{{ color.hex_code }}] {% endif %} transition duration-100 cursor-pointer focus:ring-2 focus:ring-gray-500 h-8 w-8 relative"
@@ -114,7 +114,7 @@
             @mouseleave="hoveredColorId = null"
           >
             <div 
-              class="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap"
+              class="absolute px-2 py-1 text-xs text-white transform -translate-x-1/2 bg-black rounded -top-8 left-1/2 whitespace-nowrap"
               x-show="hoveredColorId === {{ color.id }}"
               x-transition
             >
@@ -126,10 +126,10 @@
     </div>
     {% endif %}
     <div class="mt-6">
-      <p class="pb-2 text-gray-500 text-xs">Quantity</p>
+      <p class="pb-2 text-xs text-gray-500">Quantity</p>
       <div class="flex">
         <button
-          class="active:ring-2 active:ring-gray-500 border cursor-pointer duration-100 flex focus:ring-2 focus:ring-gray-500 h-8 hover:bg-neutral-100 items-center justify-center w-8"
+          class="flex items-center justify-center w-8 h-8 duration-100 border cursor-pointer active:ring-2 active:ring-gray-500 focus:ring-2 focus:ring-gray-500 hover:bg-neutral-100"
           @click="decrementQuantity()"
           :disabled="quantity <= 1"
           :class="{ 'opacity-50 cursor-not-allowed': quantity <= 1 }"
@@ -137,19 +137,19 @@
           −
         </button>
         <div
-          class="active:ring-gray-500 border-b border-t cursor-text flex h-8 items-center justify-center w-8"
+          class="flex items-center justify-center w-8 h-8 border-t border-b active:ring-gray-500 cursor-text"
           x-text="quantity"
         >
         </div>
         <button
-          class="active:ring-2 active:ring-gray-500 border cursor-pointer duration-100 flex focus:ring-2 focus:ring-gray-500 h-8 hover:bg-neutral-100 items-center justify-center w-8"
+          class="flex items-center justify-center w-8 h-8 duration-100 border cursor-pointer active:ring-2 active:ring-gray-500 focus:ring-2 focus:ring-gray-500 hover:bg-neutral-100"
           @click="incrementQuantity()"
         >
           +
         </button>
       </div>
     </div>
-    <div class="flex flex-row gap-2 items-center mt-7">
+    <div class="flex flex-row items-center gap-2 mt-7">
       <form action="{% url "add_to_cart" %}" method="post" id="add-to-cart-form">
           {% csrf_token %}
           <input type="hidden" name="product_id" :value="{{product.id}}">
@@ -158,7 +158,7 @@
           <input type="hidden" name="color" :value="selectedColor">
         <button
           type="submit"
-          class="bg-black duration-100 flex gap-2 py-3 px-3 hover:bg-gray-800 items-center justify-center text-white transition-colors"
+          class="flex items-center justify-center gap-2 px-3 py-3 text-white transition-colors duration-100 bg-black hover:bg-gray-800"
           @click="addToCart()"
         >
           <svg class="w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -182,6 +182,6 @@
 </section>
 <section class="container lg:py-10 max-w-[1200px] mx-auto px-2 py-5">
     <h2 class="text-xl">Product details</h2>
-    <p class="lg:w-3/4 mt-4">{{ product.description|safe }}</p>
+    <p class="mt-4 lg:w-3/4">{{ product.description|safe }}</p>
 </section>
 {% endblock %}

@@ -1,20 +1,19 @@
-
 {% load static %}
 {% load nix %}
-<div class="bg-white max-w-80 mx-auto">
-    <div class="w-full aspect-square bg-gray-100">
+<div class="mx-auto bg-white max-w-80">
+    <div class="w-full bg-gray-100 aspect-square">
         <a href="{{ product.get_absolute_url }}" class="block w-full h-full">
-            {% if product.get_primary_image_url %}
-                <img src="{{ product.get_primary_image_url }}" alt="{{ product.name }}" loading="lazy" class="w-full h-full object-cover">
+            {% if product.get_primary_image %}
+                <img src="{{ product.get_primary_image.image.url }}" alt="{{ product.name }}" loading="lazy" class="object-cover w-full h-full">
             {% else %}
-                <img src="https://placehold.co/150/?text=No+image?bg=ccc" alt="No image" class="w-full h-full object-cover">
+                <img src="https://placehold.co/150/?text=No+image&bg=ccc" alt="No image" class="object-cover w-full h-full">
             {% endif %}
         </a>
     </div>
     <div class="p-4">
-        <a href="{{ product.get_absolute_url }}" class="text-gray-800 font-semibold text-lg line-clamp-1 mb-3">{{ product.name }}</a>
-        <p class="text-gray-600 text-sm line-clamp-2 mb-2">{{ product.short_description }}</p>
-        <span class="text-black font-semibold">{{ product.price|taka }}</span>
+        <a href="{{ product.get_absolute_url }}" class="mb-3 text-lg font-semibold text-gray-800 line-clamp-1">{{ product.name }}</a>
+        <p class="mb-2 text-sm text-gray-600 line-clamp-2">{{ product.short_description }}</p>
+        <span class="font-semibold text-black">{{ product.price|taka }}</span>
         {% stock_status product %}
     </div>
 </div>
