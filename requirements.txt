@@ -7,7 +7,9 @@ dj-database-url==3.0.0
 Django==5.2.3
 django-cloudinary-storage==0.3.0
 django-robots==6.1
+gunicorn==25.1.0
 idna==3.11
+packaging==26.0
 pillow==11.2.1
 psycopg2-binary==2.9.10
 python-dotenv==1.1.0

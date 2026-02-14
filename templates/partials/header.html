@@ -10,19 +10,18 @@ x-data="{
         navLinks: [
             { name: 'Home', href: '{% url "index" %}'},
             { name: 'Products', href: '{% url "products" %}' },
-            { name: 'About', href: '{% url "about" %}' },
             { name: 'Contact', href: '{% url "contact" %}' }
         ],
         activeLink: window.location.pathname
     }">
-        <div class="max-w-7xl mx-auto px-4">
+        <div class="px-4 mx-auto max-w-7xl">
             <div class="flex items-center justify-between py-3">
                 <!-- Left Section -->
                 <div class="flex items-center gap-4">
                     <!-- Mobile Menu Button -->
                     <button 
                         @click="mobileMenuOpen = !mobileMenuOpen"
-                        class="lg:hidden p-2 rounded-lg hover:text-black transition-colors duration-200"
+                        class="p-2 transition-colors duration-200 rounded-lg lg:hidden hover:text-black"
                         :class="{ 'text-black': mobileMenuOpen }"
                     >
                         <svg class="w-5 h-5 transition-transform duration-300" :class="{ 'rotate-90': mobileMenuOpen }" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -36,11 +35,11 @@ x-data="{
                     </a>
 
                     <!-- Desktop Navigation -->
-                    <nav class="hidden lg:flex items-center gap-4">
+                    <nav class="items-center hidden gap-4 lg:flex">
                         <template x-for="link in navLinks" :key="link.name">
                             <a 
                                 :href="link.href" 
-                                class="nav-link text-gray-600 hover:text-black p-2 transition-colors duration-200"
+                                class="p-2 text-gray-600 transition-colors duration-200 nav-link hover:text-black"
                                 :class="{ 'nav-link-active text-black': activeLink === link.href }"
                                 x-text="link.name"
                             ></a>
@@ -53,7 +52,7 @@ x-data="{
                     <!-- Mobile Search Toggle -->
                     <button 
                         @click="searchOpen = !searchOpen"
-                        class="lg:hidden p-2 hover:text-black transition-colors duration-200"
+                        class="p-2 transition-colors duration-200 lg:hidden hover:text-black"
                         :class="{'text-black': searchOpen }"
                     >
                         <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -68,7 +67,7 @@ x-data="{
 
                     <!-- Cart Button -->
                     <a href="{% url "cart" %}" class="p-1.5 gap-2 flex items-center divide-x hover:text-black transition-colors duration-200 group">
-                        <svg class="w-5 h-5 text-gray-700 group-hover:text-black transition-colors duration-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg class="w-5 h-5 text-gray-700 transition-colors duration-200 group-hover:text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 0 0-8 0v4M5 9h14l1 12H4L5 9z" />
                         </svg>
                         <span 
@@ -82,10 +81,10 @@ x-data="{
                     {% comment %} <div class="relative" x-data="{ userMenuOpen: false }">
                         <button 
                             @click="userMenuOpen = !userMenuOpen"
-                            class="p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+                            class="p-2 transition-colors duration-200 rounded-lg hover:bg-gray-100"
                         >
-                            <div class="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-                                <span class="text-white font-medium text-sm">U</span>
+                            <div class="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500">
+                                <span class="text-sm font-medium text-white">U</span>
                             </div>
                         </button>
                         
@@ -99,12 +98,12 @@ x-data="{
                             x-transition:leave="transition ease-in duration-150"
                             x-transition:leave-start="opacity-100 scale-100"
                             x-transition:leave-end="opacity-0 scale-95"
-                            class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2"
+                            class="absolute right-0 w-48 py-2 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg"
                         >
-                            <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors duration-200">Profile</a>
-                            <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors duration-200">Settings</a>
+                            <a href="#" class="block px-4 py-2 text-gray-700 transition-colors duration-200 hover:bg-gray-50">Profile</a>
+                            <a href="#" class="block px-4 py-2 text-gray-700 transition-colors duration-200 hover:bg-gray-50">Settings</a>
                             <hr class="my-2 border-gray-200">
-                            <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors duration-200">Logout</a>
+                            <a href="#" class="block px-4 py-2 text-gray-700 transition-colors duration-200 hover:bg-gray-50">Logout</a>
                         </div>
                     </div> {% endcomment %}
                 </div>
@@ -119,7 +118,7 @@ x-data="{
                 x-transition:leave="transition ease-in duration-200"
                 x-transition:leave-start="opacity-100 translate-y-0"
                 x-transition:leave-end="opacity-0 -translate-y-2"
-                class="lg:hidden pb-4"
+                class="pb-4 lg:hidden"
             >
                 {% include "partials/search.html" %}
             </div>
@@ -134,13 +133,13 @@ x-data="{
             x-transition:leave="transition ease-in duration-200"
             x-transition:leave-start="opacity-100 translate-y-0"
             x-transition:leave-end="opacity-0 -translate-y-4"
-            class="lg:hidden border-t border-gray-200 bg-white/95 backdrop-blur-sm"
+            class="border-t border-gray-200 lg:hidden bg-white/95 backdrop-blur-sm"
         >
-            <nav class="max-w-7xl mx-auto px-4 py-4">
+            <nav class="px-4 py-4 mx-auto max-w-7xl">
                 <template x-for="link in navLinks" :key="link.name">
                     <a 
                         :href="link.href" 
-                        class="nav-link p-2 text-gray-600 hover:text-black transition-colors duration-200 mb-1"
+                        class="p-2 mb-1 text-gray-600 transition-colors duration-200 nav-link hover:text-black"
                         :class="{ 'text-black nav-link-active': activeLink === link.href }"
                         x-text="link.name"
                         @click="mobileMenuOpen = false"
