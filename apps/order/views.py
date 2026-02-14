@@ -42,8 +42,14 @@ def checkout_view(request):
             district=district,
             address=address,
         )
-        # Calculate shipping 
+
+        # Fetch Config object and check for None
         config = Config.objects.first()
+        if not config:
+            messages.error(request, 'Configuration settings are missing.')
+            return redirect('cart')  # or any page you prefer
+
+        # Calculate shipping cost based on district
         shipping_cost = config.delivery_cost_dhaka if district == 'Dhaka' else config.delivery_cost
         
         # Create order
@@ -62,6 +68,7 @@ def checkout_view(request):
         'subtotal': cart.get_total_price(),
     }
     return render(request, 'order/checkout.html', context)
+
 
 
 def confirmation(request, order_number):

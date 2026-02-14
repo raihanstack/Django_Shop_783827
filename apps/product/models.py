@@ -3,6 +3,10 @@ from django.core.validators import MinValueValidator
 from django.utils.text import slugify
 from django.urls import reverse
 from cloudinary.models import CloudinaryField
+from cloudinary import uploader
+from PIL import Image as PilImage
+from io import BytesIO
+
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -23,6 +27,7 @@ class Category(models.Model):
 
     def get_absolute_url(self):
         return reverse('category', kwargs={'slug': self.slug})
+
 
 class Product(models.Model):
     name = models.CharField(max_length=200)
@@ -60,11 +65,10 @@ class Product(models.Model):
     def get_primary_image_url(self):
         """Get primary product image URL"""
         return self.images.filter(is_primary=True).first().image.url
-    
+
     def get_primary_image(self):
         """Get primary product image"""
         return self.images.filter(is_primary=True).first()
-
 
     def get_all_images(self):
         """Get all product images"""
@@ -111,7 +115,7 @@ class Image(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
     image = CloudinaryField('image')
     alt_text = models.CharField(max_length=200, blank=True)
-    is_primary = models.BooleanField(default=True)
+    is_primary = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.product.name} - Image"
@@ -120,5 +124,21 @@ class Image(models.Model):
         # Ensure only one primary image per product
         if self.is_primary:
             Image.objects.filter(product=self.product, is_primary=True).update(is_primary=False)
-        super().save(*args, **kwargs)
 
+        if self.image:
+            # Open the image using PIL and convert to RGB
+            img = PilImage.open(self.image)
+            img = img.convert('RGB')  # Convert to RGB if it's not
+
+            # Resize the image to reduce size (optional)
+            img = img.resize((800, 800), PilImage.Resampling.LANCZOS)  # Use LANCZOS for high-quality downsampling
+
+            # Save the image in JPEG format
+            img_io = BytesIO()
+            img.save(img_io, format='JPEG', quality=85)  # Compress the image
+            img_io.seek(0)
+
+            # Upload the image to Cloudinary and update the image field with the URL
+            self.image = uploader.upload(img_io)['secure_url']
+
+        super().save(*args, **kwargs)

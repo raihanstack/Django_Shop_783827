@@ -14,7 +14,7 @@ SECRET_KEY = getenv('SECRET_KEY')
 
 DEBUG = True
 
-#DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+# DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = [
     'babyandfashion.com',
@@ -109,7 +109,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 STATICFILES_STORAGE = 'cloudinary_storage.storage.StaticHashedStorage'
 
