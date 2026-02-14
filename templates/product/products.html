@@ -1,0 +1,44 @@
+
+{% extends "layout.html" %}
+{% load nix %}
+
+{% block title %}Nixagone - Products{% endblock title %}
+
+{% block main_content %}
+<div class="mx-auto">
+    {% if search_query %}
+        {% include "partials/heading.html" with title="Search" %}
+        <p class="mb-6 container mx-auto text-gray-600">Product maching "{{search_query}}"</p>
+    {% else %}
+        {% include "partials/heading.html" with title="Products" %}
+    {% endif %}
+    <form action="{% url 'products' %}" method="get" class="mb-6 md:mb-12 flex items-center gap-4 container mx-auto">
+        <label for="select-category" class="text-gray-700 font-medium">Category:</label>
+        <select name="category" id="select-category" class="border bg-white px-3 py-2" onchange="this.form.submit()">
+            <option value="">All Categories</option>
+            {% for category in categories %}
+                <option value="{{ category.slug }}" {% if category.slug == current_category %}selected{% endif %}>{{ category.name }}</option>
+            {% endfor %}
+        </select>
+        {% if search_query %}
+            <input type="hidden" name="q" value="{{ search_query }}">
+        {% endif %}
+    </form>
+    {% if products %}
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {% for product in products %}
+            {% product_card product %}
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="flex items-center justify-center py-12 text-xl text-gray-800">
+        No Product Found
+    </div>
+    {% endif %}
+    <div class="mt-8">
+        {% include "partials/pagination.html" %}
+    </div>
+</div>
+{% endblock main_content %}
+
