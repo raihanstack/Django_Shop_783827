@@ -1,17 +1,17 @@
 {% extends "layout.html" %}
-{% block title %}Baby & Fashion - Trendy Apparel for Every Stage of Growth{% endblock title %} 
+{% block title %}Baby & Fashion - Stylish Apparel for Every Stage of Growth{% endblock title %}
 
 {% block main_content %}
 {% load nix %}
 
 <!-- Hero Section -->
 <section class="relative px-6 py-32 sm:px-8">
-  <div class="container relative z-10 mx-auto text-center shadow-xl">
+  <div class="container relative z-10 mx-auto text-center">
     <h1 class="mb-6 text-3xl font-extrabold leading-tight text-black sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl drop-shadow-lg">
-      Trendy Apparel for Every Stage of Growth
+      Stylish Apparel for Every Stage of Growth
     </h1>
     <p class="mb-8 text-lg text-black sm:text-xl md:text-2xl opacity-90">
-      ✨ Explore our collection of stylish and comfortable clothing, perfect for every age and every occasion—from playdates to special celebrations.
+      ✨ Discover our collection of comfortable, stylish clothing, perfect for every age and occasion—from playdates to celebrations.
     </p>
     <a href="{% url 'products' %}" class="px-8 py-4 text-lg font-bold text-white transition-all duration-300 ease-in-out bg-pink-600 rounded-full shadow-lg hover:bg-pink-700 hover:scale-105 focus:ring-4 focus:ring-pink-200">
       Shop the Collection
@@ -19,29 +19,28 @@
   </div>
 </section>
 
-
 <!-- Introduction Section -->
 <section class="container px-4 mx-auto my-16 text-center">
-  <h2 class="mb-5 text-3xl font-bold text-pink-600">Why Baby & Fashion is the Ultimate Choice for Every Stage</h2>
+  <h2 class="mb-5 text-3xl font-bold text-pink-600">Why Choose Baby & Fashion?</h2>
   <p class="max-w-3xl mx-auto mb-8 text-lg text-gray-700">
-    Whether you're looking for soft, cozy outfits for your little one or on-trend pieces for your growing child, we have you covered. Here's why Baby & Fashion is the go-to destination for stylish, comfortable clothing:
+    Looking for stylish, comfortable clothing for your child? Baby & Fashion offers the perfect blend of quality and affordability. Here’s why we’re the top choice:
   </p>
   
   <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
     <div class="flex flex-col items-center px-6 py-4 text-center transition-all transform bg-white rounded-lg shadow-lg hover:scale-105 hover:shadow-xl">
       <i class="mb-4 text-4xl text-pink-600 fa fa-cogs"></i>
       <h3 class="text-xl font-bold text-pink-600">Premium Quality</h3>
-      <p class="text-sm text-gray-500">Our garments are crafted from the finest materials to provide your child with comfort and durability, no matter their age.</p>
+      <p class="text-sm text-gray-500">Our clothing is crafted with care from high-quality materials for comfort and long-lasting wear.</p>
     </div>
     <div class="flex flex-col items-center px-6 py-4 text-center transition-all transform bg-white rounded-lg shadow-lg hover:scale-105 hover:shadow-xl">
       <i class="mb-4 text-4xl text-pink-600 fa fa-th-large"></i>
       <h3 class="text-xl font-bold text-pink-600">Timeless Styles</h3>
-      <p class="text-sm text-gray-500">From playful prints to refined looks, our collection offers versatile styles that suit every personality and every occasion.</p>
+      <p class="text-sm text-gray-500">From fun prints to classic designs, our collection offers versatile styles for every personality and occasion.</p>
     </div>
     <div class="flex flex-col items-center px-6 py-4 text-center transition-all transform bg-white rounded-lg shadow-lg hover:scale-105 hover:shadow-xl">
       <i class="mb-4 text-4xl text-pink-600 fa fa-dollar-sign"></i>
       <h3 class="text-xl font-bold text-pink-600">Affordable Fashion</h3>
-      <p class="text-sm text-gray-500">We believe great fashion should be accessible. Our clothing is stylish and affordable, so every family can enjoy the latest trends.</p>
+      <p class="text-sm text-gray-500">Fashion doesn’t have to be expensive. Our clothing is stylish and affordable, making trends accessible for all families.</p>
     </div>
   </div>
 </section>
@@ -62,22 +61,22 @@
 <section class="container px-4 mx-auto my-16 text-center">
   <h2 class="mb-5 text-3xl font-bold text-pink-600">Explore Our Exclusive Collections</h2>
   <p class="max-w-3xl mx-auto mb-8 text-lg text-gray-700">
-    Discover our carefully curated collections designed to meet the needs of every stage of childhood. From playful designs to polished styles, there's something for everyone.
+    Discover carefully curated collections for every stage of childhood. Whether you need playful designs or refined styles, we have it all.
   </p>
   <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
     <div class="p-6 transition-all transform bg-white shadow-lg rounded-xl hover:scale-105">
       <h3 class="mt-4 text-xl font-bold text-pink-600">Infant & Toddler Fashion</h3>
-      <p class="text-gray-500">Soft, snuggly, and stylish—perfect for your little one’s first years. Easy to wear and even easier to love.</p>
+      <p class="text-gray-500">Soft, cozy outfits for your little one’s early years—easy to wear and love.</p>
       <a href="{% url 'products' %}?category=infant" class="inline-block mt-4 text-pink-600 hover:underline">Shop Now</a>
     </div>
     <div class="p-6 transition-all transform bg-white shadow-lg rounded-xl hover:scale-105">
       <h3 class="mt-4 text-xl font-bold text-pink-600">Children's Trendy Wear</h3>
-      <p class="text-gray-500">Versatile styles for every occasion—whether it's a day at school or a weekend outing.</p>
+      <p class="text-gray-500">Trendy styles for school or play, perfect for every day.</p>
       <a href="{% url 'products' %}?category=children" class="inline-block mt-4 text-pink-600 hover:underline">Shop Now</a>
     </div>
     <div class="p-6 transition-all transform bg-white shadow-lg rounded-xl hover:scale-105">
       <h3 class="mt-4 text-xl font-bold text-pink-600">Teens' Fashion</h3>
-      <p class="text-gray-500">Modern, chic, and functional designs to keep your teen stylish, comfortable, and confident.</p>
+      <p class="text-gray-500">Modern, comfortable, and stylish designs to keep your teen confident.</p>
       <a href="{% url 'products' %}?category=teen" class="inline-block mt-4 text-pink-600 hover:underline">Shop Now</a>
     </div>
   </div>
@@ -92,7 +91,7 @@
     </div>
     <div class="flex flex-col justify-center ml-6">
       <h3 class="text-xs font-bold text-left text-pink-600 lg:text-sm">30-Day Easy Returns</h3>
-      <p class="text-xs text-left text-pink-500 lg:text-sm">No worries! You can easily return items within 30 days if they don’t work out.</p>
+      <p class="text-xs text-left text-pink-500 lg:text-sm">Easy returns within 30 days if it’s not right for you.</p>
     </div>
   </div>
 
@@ -103,7 +102,7 @@
     </div>
     <div class="flex flex-col justify-center ml-6">
       <h3 class="text-xs font-bold text-left text-pink-600 lg:text-sm">Personalized Shopping Assistance</h3>
-      <p class="text-xs text-left text-pink-500 lg:text-sm">Our stylists are here to help you choose the best outfits, tailored for your child's needs and preferences.</p>
+      <p class="text-xs text-left text-pink-500 lg:text-sm">Our stylists are here to help you find the best outfits for your child.</p>
     </div>
   </div>
 
@@ -114,7 +113,7 @@
     </div>
     <div class="flex flex-col justify-center ml-6">
       <h3 class="text-xs font-bold text-left text-pink-600 lg:text-sm">Global Shipping</h3>
-      <p class="text-xs text-left text-pink-500 lg:text-sm">No matter where you are, we deliver worldwide to bring our beautiful collection right to your doorstep.</p>
+      <p class="text-xs text-left text-pink-500 lg:text-sm">We ship worldwide, delivering our collections right to your door.</p>
     </div>
   </div>
 
@@ -125,7 +124,7 @@
     </div>
     <div class="flex flex-col justify-center ml-6">
       <h3 class="text-xs font-bold text-left text-pink-600 lg:text-sm">24/7 Customer Support</h3>
-      <p class="text-xs text-left text-pink-500 lg:text-sm">Need help? Our team is available around the clock to assist with any queries or issues you may have.</p>
+      <p class="text-xs text-left text-pink-500 lg:text-sm">Our team is available 24/7 to assist with any questions or issues.</p>
     </div>
   </div>
 </section>
