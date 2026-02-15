@@ -12,9 +12,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = getenv('SECRET_KEY')
 
-DEBUG = True
+# DEBUG = True
 
-# DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = [
     'babyandfashion.vercel.app',
@@ -27,6 +27,10 @@ CSRF_TRUSTED_ORIGINS = ['https://babyandfashion.vercel.app']
 AUTH_USER_MODEL = 'main.User'
 
 INSTALLED_APPS = [
+
+    'admin_interface',
+    'colorfield',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,16 +44,13 @@ INSTALLED_APPS = [
     'apps.product.apps.ProductConfig',
     'apps.cart.apps.CartConfig',
     'apps.order.apps.OrderConfig',
-
     'main.apps.MainConfig',
 
     # Cloudinary apps
     'cloudinary',
     'cloudinary_storage',
-
-    'colorfield',      
-    'admin_interface', 
 ]
+
 
 SITE_ID = 1
 

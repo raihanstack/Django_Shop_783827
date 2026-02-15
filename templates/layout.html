@@ -1,20 +1,41 @@
 {% extends "base.html" %}
-{% block title %}{% endblock title %}
-{% block content %}
+{% block title %}My Website{% endblock title %}
 
-    <div>
-        <div class="spinner"></div>
-        <div id='main-content' style="display: none;">
-            {% include "partials/header_top.html" %}
-            {% include "partials/header.html" %}
-            {% include "partials/alert.html" %}
-            <main class="text-gray-700 max-w-7xl mx-auto px-4 md:py-8 py-4">
-                {% block main_content %}
-                <!-- Main content goes here -->
-                {% endblock main_content %}
-            </main>
-            {% include "partials/footer.html" %}
-        </div>
+{% block content %}
+<div class="relative min-h-screen bg-gray-50">
+    <!-- Spinner Overlay -->
+    <div id="loader" class="fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-500 bg-white">
+        <div class="w-16 h-16 border-4 border-blue-500 rounded-full border-t-transparent animate-spin"></div>
     </div>
-    
+
+    <!-- Main Content -->
+    <div id="main-content" class="transition-opacity duration-700 opacity-0">
+        {% include "partials/header_top.html" %}
+        {% include "partials/header.html" %}
+        {% include "partials/alert.html" %}
+
+        <main class="px-4 py-6 mx-auto text-gray-800 max-w-7xl md:py-10">
+            {% block main_content %}
+            <!-- Main content goes here -->
+            {% endblock main_content %}
+        </main>
+
+        {% include "partials/footer.html" %}
+    </div>
+</div>
+
+<!-- JS to handle loader fade out -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const loader = document.getElementById('loader');
+        const mainContent = document.getElementById('main-content');
+
+        // simulate loading delay (remove in production)
+        setTimeout(() => {
+            loader.style.opacity = 0;
+            setTimeout(() => loader.style.display = 'none', 500); // hide loader after fade
+            mainContent.style.opacity = 1; // fade in main content
+        }, 500); // adjust delay if needed
+    });
+</script>
 {% endblock content %}

@@ -1,11 +1,9 @@
 {% load nix %}
 {% load static %}
-<header 
-class="sticky top-0 z-50 border-gray-200 bg-white/95 backdrop-blur-glass"
-x-data="{ 
+<header class="sticky top-0 z-50 border-gray-200 bg-white/95 backdrop-blur-glass"
+    x-data="{ 
         mobileMenuOpen: false, 
         searchOpen: false, 
-        cartCount: {% get_cart_item_count request %},
         searchQuery: '',
         navLinks: [
             { name: 'Home', href: '{% url "index" %}'},
@@ -14,149 +12,112 @@ x-data="{
         ],
         activeLink: window.location.pathname
     }">
-        <div class="px-4 mx-auto max-w-7xl">
-            <div class="flex items-center justify-between py-3">
-                <!-- Left Section -->
-                <div class="flex items-center gap-4">
-                    <!-- Mobile Menu Button -->
-                    <button 
-                        @click="mobileMenuOpen = !mobileMenuOpen"
-                        class="p-2 transition-colors duration-200 rounded-lg lg:hidden hover:text-black"
-                        :class="{ 'text-black': mobileMenuOpen }"
-                    >
-                        <svg class="w-5 h-5 transition-transform duration-300" :class="{ 'rotate-90': mobileMenuOpen }" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
-                    </button>
+    <div class="px-4 mx-auto max-w-7xl">
+        <div class="flex items-center justify-between py-3">
+            <!-- Left Section (Logo) -->
+            <div class="flex items-center justify-start w-full gap-4 lg:w-auto">
+                <!-- Mobile Menu Button -->
+                <button @click="mobileMenuOpen = !mobileMenuOpen"
+                        class="p-2 transition-colors duration-200 rounded-lg lg:hidden hover:text-pink-600"
+                        :class="{ 'text-pink-600': mobileMenuOpen }">
+                    <svg class="w-5 h-5 transition-transform duration-300" :class="{ 'rotate-90': mobileMenuOpen }" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
 
-                    <!-- Logo -->
-                    <a href="{% url "index" %}" class="h-25 fill-gray-800">
-                        <h1 class="text-2xl font-semibold">{% config 'site_title' %}</h1>
-                    </a>
-
-                    <!-- Desktop Navigation -->
-                    <nav class="items-center hidden gap-4 lg:flex">
-                        <template x-for="link in navLinks" :key="link.name">
-                            <a 
-                                :href="link.href" 
-                                class="p-2 text-gray-600 transition-colors duration-200 nav-link hover:text-black"
-                                :class="{ 'nav-link-active text-black': activeLink === link.href }"
-                                x-text="link.name"
-                            ></a>
-                        </template>
-                    </nav>
-                </div>
-
-                <!-- Right Section -->
-                <div class="flex items-center gap-2">
-                    <!-- Mobile Search Toggle -->
-                    <button 
-                        @click="searchOpen = !searchOpen"
-                        class="p-2 transition-colors duration-200 lg:hidden hover:text-black"
-                        :class="{'text-black': searchOpen }"
-                    >
-                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-4.34-4.34M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z" />
-                        </svg>
-                    </button>
-
-                    <!-- Desktop Search -->
-                    <div class="hidden lg:block">
-                      {% include "partials/search.html" %}
-                    </div>
-
-                    <!-- Cart Button -->
-                    <a href="{% url "cart" %}" class="p-1.5 gap-2 flex items-center divide-x hover:text-black transition-colors duration-200 group">
-                        <svg class="w-5 h-5 text-gray-700 transition-colors duration-200 group-hover:text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 0 0-8 0v4M5 9h14l1 12H4L5 9z" />
-                        </svg>
-                        <span 
-                            x-show="cartCount > 0"
-                            x-text="cartCount"
-                            class="text-gray-600 text-sm pl-1.5"
-                        ></span>
-                    </a>
-
-                    <!-- User Menu -->
-                    {% comment %} <div class="relative" x-data="{ userMenuOpen: false }">
-                        <button 
-                            @click="userMenuOpen = !userMenuOpen"
-                            class="p-2 transition-colors duration-200 rounded-lg hover:bg-gray-100"
-                        >
-                            <div class="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500">
-                                <span class="text-sm font-medium text-white">U</span>
-                            </div>
-                        </button>
-                        
-                        <!-- User Dropdown -->
-                        <div 
-                            x-show="userMenuOpen"
-                            @click.away="userMenuOpen = false"
-                            x-transition:enter="transition ease-out duration-200"
-                            x-transition:enter-start="opacity-0 scale-95"
-                            x-transition:enter-end="opacity-100 scale-100"
-                            x-transition:leave="transition ease-in duration-150"
-                            x-transition:leave-start="opacity-100 scale-100"
-                            x-transition:leave-end="opacity-0 scale-95"
-                            class="absolute right-0 w-48 py-2 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg"
-                        >
-                            <a href="#" class="block px-4 py-2 text-gray-700 transition-colors duration-200 hover:bg-gray-50">Profile</a>
-                            <a href="#" class="block px-4 py-2 text-gray-700 transition-colors duration-200 hover:bg-gray-50">Settings</a>
-                            <hr class="my-2 border-gray-200">
-                            <a href="#" class="block px-4 py-2 text-gray-700 transition-colors duration-200 hover:bg-gray-50">Logout</a>
-                        </div>
-                    </div> {% endcomment %}
-                </div>
+                <!-- Logo -->
+                <a href="{% url "index" %}" class="flex items-center text-2xl font-semibold text-pink-600">
+                    <img src="{% static 'img/logo.png' %}" alt="Logo" class="h-10 mr-2"> 
+                    <h1 class="font-serif tracking-wide">Baby & Fashion</h1>
+                </a>
             </div>
 
-            <!-- Mobile Search Bar -->
-            <div 
-                x-show="searchOpen"
-                x-transition:enter="transition ease-out duration-300"
-                x-transition:enter-start="opacity-0 -translate-y-2"
-                x-transition:enter-end="opacity-100 translate-y-0"
-                x-transition:leave="transition ease-in duration-200"
-                x-transition:leave-start="opacity-100 translate-y-0"
-                x-transition:leave-end="opacity-0 -translate-y-2"
-                class="pb-4 lg:hidden"
-            >
-                {% include "partials/search.html" %}
+            <!-- Centered Navigation Menu -->
+            <div class="flex justify-center w-full lg:w-auto">
+                <nav class="items-center hidden gap-6 lg:flex">
+                    <template x-for="link in navLinks" :key="link.name">
+                        <a :href="link.href" 
+                           class="p-2 text-gray-600 transition-colors duration-200 hover:text-pink-600 nav-link"
+                           :class="{ 'nav-link-active text-pink-600': activeLink === link.href }" 
+                           x-text="link.name"></a>
+                    </template>
+                </nav>
+            </div>
+
+            <!-- Right Section (Search & Cart) -->
+            <div class="flex items-center gap-4">
+                <!-- Mobile Search Toggle -->
+                <button 
+                    @click="searchOpen = !searchOpen"
+                    class="p-2 transition-colors duration-200 lg:hidden hover:text-black"
+                    :class="{'text-black': searchOpen }">
+                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-4.34-4.34M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z" />
+                    </svg>
+                </button>
+
+                <!-- Desktop Search Bar -->
+                <div class="relative hidden w-full lg:block">
+                    {% include "partials/search.html" %}
+                </div>
+
+                <!-- Cart Button -->
+                <a href="{% url "cart" %}" class="p-1.5 flex items-center gap-2 hover:text-black transition-colors duration-200 group">
+                    <svg class="w-5 h-5 text-gray-700 transition-colors duration-200 group-hover:text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 0 0-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
+                    <span 
+                        x-show="cartCount > 0"
+                        x-text="cartCount"
+                        class="text-gray-600 text-sm pl-1.5"
+                    ></span>
+                </a>
             </div>
         </div>
 
-        <!-- Mobile Navigation Menu -->
-        <div 
-            x-show="mobileMenuOpen"
-            x-transition:enter="transition ease-out duration-300"
-            x-transition:enter-start="opacity-0 -translate-y-4"
-            x-transition:enter-end="opacity-100 translate-y-0"
-            x-transition:leave="transition ease-in duration-200"
-            x-transition:leave-start="opacity-100 translate-y-0"
-            x-transition:leave-end="opacity-0 -translate-y-4"
-            class="border-t border-gray-200 lg:hidden bg-white/95 backdrop-blur-sm"
-        >
-            <nav class="px-4 py-4 mx-auto max-w-7xl">
-                <template x-for="link in navLinks" :key="link.name">
-                    <a 
-                        :href="link.href" 
-                        class="p-2 mb-1 text-gray-600 transition-colors duration-200 nav-link hover:text-black"
-                        :class="{ 'text-black nav-link-active': activeLink === link.href }"
-                        x-text="link.name"
-                        @click="mobileMenuOpen = false"
-                    ></a>
-                </template>
-            </nav>
+        <!-- Mobile Search Bar -->
+        <div x-show="searchOpen" 
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 -translate-y-2"
+             x-transition:enter-end="opacity-100 translate-y-0"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100 translate-y-0"
+             x-transition:leave-end="opacity-0 -translate-y-2"
+             class="pb-4 lg:hidden">
+            {% include "partials/search.html" %}
         </div>
-    </header>
-    <script>
-        const header = document.querySelector('header');
-        const scrollThreshold = 100; // Example threshold
+    </div>
 
-        window.addEventListener('scroll', () => {
+    <!-- Mobile Navigation Menu -->
+    <div x-show="mobileMenuOpen"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 -translate-y-4"
+         x-transition:enter-end="opacity-100 translate-y-0"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100 translate-y-0"
+         x-transition:leave-end="opacity-0 -translate-y-4"
+         class="border-t border-gray-200 lg:hidden bg-white/95 backdrop-blur-sm">
+        <nav class="px-4 py-4 mx-auto max-w-7xl">
+            <template x-for="link in navLinks" :key="link.name">
+                <a :href="link.href" 
+                   class="p-2 mb-1 text-gray-600 transition-colors duration-200 hover:text-pink-600 nav-link"
+                   :class="{ 'text-pink-600 nav-link-active': activeLink === link.href }" 
+                   x-text="link.name"
+                   @click="mobileMenuOpen = false"></a>
+            </template>
+        </nav>
+    </div>
+</header>
+
+<script>
+    const header = document.querySelector('header');
+    const scrollThreshold = 100; 
+
+    window.addEventListener('scroll', () => {
         if (window.scrollY > scrollThreshold) {
             header.classList.add('border-b');
         } else {
             header.classList.remove('border-b');
         }
-        });
-    </script>
+    });
+</script>

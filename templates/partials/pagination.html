@@ -1,39 +1,42 @@
 {% if page_obj.has_other_pages %}
 <nav class="flex items-center justify-center mt-4" aria-label="Pagination">
   <ul class="inline-flex -space-x-px">
+    <!-- Previous Page Button -->
     {% if page_obj.has_previous %}
       <li>
-        <a href="?page={{ page_obj.previous_page_number }}" class="px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700" aria-label="Previous">
+        <a href="?page={{ page_obj.previous_page_number }}" class="px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700" aria-label="Previous">
           &laquo;
         </a>
       </li>
     {% else %}
       <li>
-        <span class="px-3 py-2 ml-0 leading-tight text-gray-400 bg-gray-100 border border-gray-300 cursor-not-allowed">&laquo;</span>
+        <span class="px-3 py-2 ml-0 leading-tight text-gray-400 bg-gray-100 border border-gray-300 rounded-l-lg cursor-not-allowed">&laquo;</span>
       </li>
     {% endif %}
 
+    <!-- Page Number Links -->
     {% for num in page_obj.paginator.page_range %}
       {% if page_obj.number == num %}
         <li>
-          <span class="px-3 py-2 leading-tight text-black bg-gray-50 border border-gray-300">{{ num }}</span>
+          <span class="px-3 py-2 leading-tight text-white bg-blue-600 border border-gray-300 rounded-md">{{ num }}</span>
         </li>
       {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
         <li>
-          <a href="?page={{ num }}" class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">{{ num }}</a>
+          <a href="?page={{ num }}" class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-100 hover:text-gray-700">{{ num }}</a>
         </li>
       {% endif %}
     {% endfor %}
 
+    <!-- Next Page Button -->
     {% if page_obj.has_next %}
       <li>
-        <a href="?page={{ page_obj.next_page_number }}" class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700" aria-label="Next">
+        <a href="?page={{ page_obj.next_page_number }}" class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700" aria-label="Next">
           &raquo;
         </a>
       </li>
     {% else %}
       <li>
-        <span class="px-3 py-2 leading-tight text-gray-400 bg-gray-100 border border-gray-300 cursor-not-allowed">&raquo;</span>
+        <span class="px-3 py-2 leading-tight text-gray-400 bg-gray-100 border border-gray-300 rounded-r-lg cursor-not-allowed">&raquo;</span>
       </li>
     {% endif %}
   </ul>

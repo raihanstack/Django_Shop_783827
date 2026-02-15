@@ -1,6 +1,6 @@
 {% load static %}
 {% load nix %}
-<div class="mx-auto bg-white max-w-80">
+<div class="max-w-xs mx-auto overflow-hidden bg-white rounded-lg shadow-md md:max-w-sm lg:max-w-md">
     <div class="w-full bg-gray-100 aspect-square">
         <a href="{{ product.get_absolute_url }}" class="block w-full h-full">
             {% if product.get_primary_image %}
@@ -11,9 +11,9 @@
         </a>
     </div>
     <div class="p-4">
-        <a href="{{ product.get_absolute_url }}" class="mb-3 text-lg font-semibold text-gray-800 line-clamp-1">{{ product.name }}</a>
+        <a href="{{ product.get_absolute_url }}" class="mb-3 text-lg font-semibold text-gray-800 transition-colors duration-300 hover:text-pink-600 line-clamp-1">{{ product.name }}</a>
         <p class="mb-2 text-sm text-gray-600 line-clamp-2">{{ product.short_description }}</p>
-        <span class="font-semibold text-black">{{ product.price|taka }}</span>
+        <span class="text-xl font-semibold text-black">{{ product.price|taka }}</span>
         {% stock_status product %}
     </div>
 </div>

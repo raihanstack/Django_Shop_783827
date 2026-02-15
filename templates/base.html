@@ -6,17 +6,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% endblock %}</title>
-    {% comment %} <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script> {% endcomment %}
-    <script defer src="{% static "js/alpine.js" %}"></script>
-    <link rel="shortcut icon" href="{% static "img/logo.svg" %}" type="image/x-icon">
-    <link rel="stylesheet" href="{% static "css/style.css" %}">
-    {% block meta_description %}{% endblock meta_description %}
+
+    <!-- Alpine.js for interactivity -->
+    <script defer src="{% static 'js/alpine.js' %}"></script>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{% static 'img/logo.svg' %}" type="image/x-icon">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script> 
+
+    <!-- Custom CSS (Tailwind CSS) -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <!-- Meta Description (can be customized per page) -->
+    {% block meta_description %}{% endblock %}
+
+    <!-- Custom head content (e.g., fonts, scripts) -->
     {% block head %}{% endblock %}
-    {% block style %}{% endblock style %}
+
+    <!-- Custom styles -->
+    {% block style %}{% endblock %}
 </head>
-  <body>
-    {% block content %}{% endblock content %}
-  </body>
-  <script src="{% static "js/loading.js" %}"></script>
+<body>
+
+    <!-- Main content area -->
+    {% block content %}{% endblock %}
+
+    <!-- Optional: Loading JS or other functionalities -->
+    <script src="{% static 'js/loading.js' %}"></script>
+
+</body>
 </html>
