@@ -44,7 +44,6 @@ class Config(models.Model):
     whatsapp_number = models.CharField(max_length=20, null=True, blank=True)
     messanger_url = models.URLField(null=True, blank=True)
     facebook_page_url = models.URLField( null=True, blank=True)
-    tiktok_url = models.URLField( null=True, blank=True)
 
     delivery_cost = models.IntegerField(default=0)
     delivery_cost_dhaka = models.IntegerField(default=0)

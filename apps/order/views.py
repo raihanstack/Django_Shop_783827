@@ -7,68 +7,61 @@ from apps.cart.views import get_or_create_cart
 from .districts import districts
 
 def checkout_view(request):
-    """Checkout process"""
     cart = get_or_create_cart(request)
 
     if not cart.items.exists():
         messages.warning(request, 'Your cart is empty.')
         return redirect('cart')
     
-    # Check stock availability for all items
-    for item in cart.items.all():
-        if not item.product.can_order(item.quantity):
-            messages.error(
-                request,
-                f'Sorry, {item.product.name} is out of stock or has insufficient quantity.'
-            )
-            return redirect('cart')
-    
+    # POST handling
     if request.method == 'POST':
         name = request.POST.get('name')
         email = request.POST.get('email')
         phone = request.POST.get('phone')
-        address = request.POST.get('address')
+        address_text = request.POST.get('address')
         district = request.POST.get('district')
 
-        if name == '' or email == '' or phone == '' or address == '' or district == '':
+        if not all([name, email, phone, address_text, district]):
             messages.error(request, 'Please fill in all required fields.')
             return redirect('checkout')
 
-        # Create address
         address = Address.objects.create(
             name=name,
             email=email,
             phone=phone,
             district=district,
-            address=address,
+            address=address_text,
         )
 
-        # Fetch Config object and check for None
         config = Config.objects.first()
         if not config:
             messages.error(request, 'Configuration settings are missing.')
-            return redirect('cart')  # or any page you prefer
+            return redirect('cart')
 
-        # Calculate shipping cost based on district
         shipping_cost = config.delivery_cost_dhaka if district == 'Dhaka' else config.delivery_cost
         
-        # Create order
         order = Order.create_from_cart(cart, address, shipping_cost)
         
         if order:
             messages.success(request, f'Order {order.order_number} placed successfully!')
-            return redirect('confirmation', order_number=order.order_number) 
+            return redirect('confirmation', order_number=order.order_number)
         else:
             messages.error(request, 'Error placing order. Please try again.')
-    
+
+    # GET request: prefill form if user is authenticated
+    initial_data = {}
+    if request.user.is_authenticated:
+        initial_data['name'] = request.user.get_full_name()
+        initial_data['email'] = request.user.email
+
     context = {
         'cart': cart,
         'districts': districts,
         'cart_items': cart.items.select_related('product').all(),
         'subtotal': cart.get_total_price(),
+        'initial_data': initial_data,  # <<< পাঠাতে হবে template-এ
     }
     return render(request, 'order/checkout.html', context)
-
 
 
 def confirmation(request, order_number):

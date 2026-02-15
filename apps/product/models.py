@@ -22,7 +22,16 @@ class Category(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.name)
+            base_slug = slugify(self.name)
+            slug = base_slug
+            counter = 1
+
+            while Category.objects.filter(slug=slug).exclude(id=self.id).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+
+            self.slug = slug
+
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
@@ -32,10 +41,20 @@ class Category(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=200)
     slug = models.SlugField(unique=True, blank=True)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products', null=True, blank=True)
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.CASCADE,
+        related_name='products',
+        null=True,
+        blank=True
+    )
     short_description = models.TextField(blank=True)
     description = models.TextField(blank=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
+    price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        validators=[MinValueValidator(0)]
+    )
     sku = models.CharField(max_length=50, unique=True)
     stock_quantity = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True)
@@ -48,34 +67,38 @@ class Product(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.name)
+            base_slug = slugify(self.name)
+            slug = base_slug
+            counter = 1
+
+            while Product.objects.filter(slug=slug).exclude(id=self.id).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+
+            self.slug = slug
+
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
         return reverse('product_detail', kwargs={'slug': self.slug})
 
     def is_in_stock(self):
-        """Check if product is in stock"""
         return self.stock_quantity > 0
 
     def can_order(self, quantity=1):
-        """Check if quantity can be ordered"""
         return self.is_active and self.stock_quantity >= quantity
 
-    def get_primary_image_url(self):
-        """Get primary product image URL"""
-        return self.images.filter(is_primary=True).first().image.url
-
     def get_primary_image(self):
-        """Get primary product image"""
         return self.images.filter(is_primary=True).first()
 
+    def get_primary_image_url(self):
+        primary = self.get_primary_image()
+        return primary.image.url if primary else None
+
     def get_all_images(self):
-        """Get all product images"""
         return self.images.all()
 
     def reduce_stock(self, quantity):
-        """Reduce stock quantity"""
         if self.stock_quantity >= quantity:
             self.stock_quantity -= quantity
             self.save()
@@ -83,7 +106,6 @@ class Product(models.Model):
         return False
 
     def increase_stock(self, quantity):
-        """Increase stock quantity"""
         self.stock_quantity += quantity
         self.save()
 
@@ -96,7 +118,7 @@ class Size(models.Model):
         unique_together = ('product', 'name')
 
     def __str__(self):
-        return f"{self.name}"
+        return self.name
 
 
 class Color(models.Model):
@@ -108,8 +130,7 @@ class Color(models.Model):
         unique_together = ('product', 'name')
 
     def __str__(self):
-        return f"{self.name}"
-
+        return self.name
 
 class Image(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
@@ -123,22 +144,11 @@ class Image(models.Model):
     def save(self, *args, **kwargs):
         # Ensure only one primary image per product
         if self.is_primary:
-            Image.objects.filter(product=self.product, is_primary=True).update(is_primary=False)
-
-        if self.image:
-            # Open the image using PIL and convert to RGB
-            img = PilImage.open(self.image)
-            img = img.convert('RGB')  # Convert to RGB if it's not
-
-            # Resize the image to reduce size (optional)
-            img = img.resize((800, 800), PilImage.Resampling.LANCZOS)  # Use LANCZOS for high-quality downsampling
-
-            # Save the image in JPEG format
-            img_io = BytesIO()
-            img.save(img_io, format='JPEG', quality=85)  # Compress the image
-            img_io.seek(0)
-
-            # Upload the image to Cloudinary and update the image field with the URL
-            self.image = uploader.upload(img_io)['secure_url']
+            Image.objects.filter(
+                product=self.product,
+                is_primary=True
+            ).exclude(id=self.id).update(is_primary=False)
 
         super().save(*args, **kwargs)
+
+

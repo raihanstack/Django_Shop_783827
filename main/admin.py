@@ -1,5 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.models import Group
+from django.contrib.sites.models import Site
 from django.utils.html import format_html
 from django.db.models import Count
 from django.contrib.admin import SimpleListFilter
@@ -8,13 +10,28 @@ from apps.order.models import Order, OrderItem, Address
 from apps.cart.models import Cart, CartItem
 from .models import User, Config
 
+# Hide default admin sections
+try:
+    admin.site.unregister(Group)
+except admin.sites.NotRegistered:
+    pass
+
+try:
+    admin.site.unregister(Site)
+except admin.sites.NotRegistered:
+    pass
+
+try:
+    from robots.models import Rule
+    admin.site.unregister(Rule)
+except Exception:
+    pass
 
 # Custom Admin Site Configuration
 admin.site.site_header = "Admin Dashboard"
 admin.site.site_title = "Admin"
 
-
-# Custom Filters
+# ---------------- Custom Filters ----------------
 class StockLevelFilter(SimpleListFilter):
     title = 'Stock Level'
     parameter_name = 'stock_level'
@@ -33,7 +50,6 @@ class StockLevelFilter(SimpleListFilter):
             return queryset.filter(stock_quantity__lt=10, stock_quantity__gt=0)
         elif self.value() == 'out_of_stock':
             return queryset.filter(stock_quantity=0)
-
 
 class OrderStatusFilter(SimpleListFilter):
     title = 'Order Status'
@@ -54,19 +70,16 @@ class OrderStatusFilter(SimpleListFilter):
         elif self.value() == 'cancelled':
             return queryset.filter(status='cancelled')
 
-
-# Inline Admin Classes
+# ---------------- Inline Admin Classes ----------------
 class SizeInline(admin.TabularInline):
     model = Size
     extra = 1
     fields = ('name',)
 
-
 class ColorInline(admin.TabularInline):
     model = Color
     extra = 1
     fields = ('name', 'hex_code')
-
 
 class ImageInline(admin.TabularInline):
     model = Image
@@ -83,7 +96,6 @@ class ImageInline(admin.TabularInline):
         return "No Image"
     image_preview.short_description = "Preview"
 
-
 class CartItemInline(admin.TabularInline):
     model = CartItem
     extra = 0
@@ -93,7 +105,6 @@ class CartItemInline(admin.TabularInline):
     def total_price(self, obj):
         return f"${obj.get_total_price():.2f}"
     total_price.short_description = "Total"
-
 
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
@@ -105,8 +116,7 @@ class OrderItemInline(admin.TabularInline):
         return f"${obj.get_total_price():.2f}"
     item_total.short_description = "Total"
 
-
-# Admin Classes
+# ---------------- Admin Classes ----------------
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
     list_display = ('username', 'email', 'phone', 'first_name', 'last_name', 'is_active', 'date_joined')
@@ -119,11 +129,9 @@ class UserAdmin(BaseUserAdmin):
     )
 
     def get_queryset(self, request):
-        
         return super().get_queryset(request).annotate(
             order_count=Count('orders')
         )
-
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -140,7 +148,6 @@ class CategoryAdmin(admin.ModelAdmin):
         return super().get_queryset(request).annotate(
             product_count=Count('products')
         )
-
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
@@ -178,17 +185,11 @@ class ProductAdmin(admin.ModelAdmin):
 
     def stock_status(self, obj):
         if obj.stock_quantity == 0:
-            return format_html(
-                '<span style="color: red; font-weight: bold;">Out of Stock</span>'
-            )
+            return format_html('<span style="color: red; font-weight: bold;">Out of Stock</span>')
         elif obj.stock_quantity < 10:
-            return format_html(
-                '<span style="color: orange; font-weight: bold;">Low Stock</span>'
-            )
+            return format_html('<span style="color: orange; font-weight: bold;">Low Stock</span>')
         else:
-            return format_html(
-                '<span style="color: green; font-weight: bold;">In Stock</span>'
-            )
+            return format_html('<span style="color: green; font-weight: bold;">In Stock</span>')
     stock_status.short_description = "Stock Status"
 
     def primary_image_preview(self, obj):
@@ -213,7 +214,6 @@ class ProductAdmin(admin.ModelAdmin):
         self.message_user(request, f'{updated} products marked as inactive.')
     mark_as_inactive.short_description = "Mark selected products as inactive"
 
-
 @admin.register(Size)
 class SizeAdmin(admin.ModelAdmin):
     list_display = ('name', 'product', 'product_category')
@@ -223,7 +223,6 @@ class SizeAdmin(admin.ModelAdmin):
     def product_category(self, obj):
         return obj.product.category.name
     product_category.short_description = "Category"
-
 
 @admin.register(Color)
 class ColorAdmin(admin.ModelAdmin):
@@ -235,7 +234,6 @@ class ColorAdmin(admin.ModelAdmin):
         return obj.product.category.name
     product_category.short_description = "Category"
 
-
 @admin.register(Image)
 class ImageAdmin(admin.ModelAdmin):
     list_display = ('product', 'alt_text', 'is_primary', 'image_preview')
@@ -245,23 +243,18 @@ class ImageAdmin(admin.ModelAdmin):
 
     def image_preview(self, obj):
         if obj.image:
-            return format_html(
-                '<img src="{}" style="width: 100px; height: 100px; object-fit: cover;" />',
-                obj.image.url
-            )
+            return format_html('<img src="{}" style="width: 100px; height: 100px; object-fit: cover;" />', obj.image.url)
         return "No Image"
     image_preview.short_description = "Preview"
-
 
 @admin.register(Cart)
 class CartAdmin(admin.ModelAdmin):
     list_display = ('id', 'user_info', 'total_items', 'total_value', 'created_at')
-    readonly_fields = ('session_id', 'user', 'created_at')
+    readonly_fields = ('session_id', 'user', 'created_at', 'total_items', 'total_value')
     list_filter = ('created_at',)
     search_fields = ('user__username', 'user__email', 'session_id')
-    readonly_fields = ('total_items', 'total_value', 'created_at')
-    
     inlines = [CartItemInline]
+
     def user_info(self, obj):
         if obj.user:
             return f"{obj.user.username} ({obj.user.email})"
@@ -275,7 +268,6 @@ class CartAdmin(admin.ModelAdmin):
     def total_value(self, obj):
         return f"${obj.get_total_price():.2f}"
     total_value.short_description = "Total Value"
-
 
 @admin.register(CartItem)
 class CartItemAdmin(admin.ModelAdmin):
@@ -295,42 +287,21 @@ class CartItemAdmin(admin.ModelAdmin):
         return f"${obj.get_total_price():.2f}"
     total_price.short_description = "Total"
 
-
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     list_per_page = 10
-    list_display = (
-        'order_number', 'created_at', 'user_info', 'status', 
-        'total_amount', 'total_items'
-    )
+    list_display = ('order_number', 'created_at', 'user_info', 'status', 'total_amount', 'total_items')
     list_filter = ('status', OrderStatusFilter, 'created_at')
     search_fields = ('order_number', 'user__username', 'address__email')
-    readonly_fields = (
-        'user', 'order_number', 'user_info', 
-        'total_amount', 'subtotal', 'total_items', 'created_at', 'shipping_cost', 'address'
-    )
+    readonly_fields = ('user', 'order_number', 'user_info', 'total_amount', 'subtotal', 'total_items', 'created_at', 'shipping_cost', 'address')
     list_editable = ('status',)
     date_hierarchy = 'created_at'
-    
-    fieldsets = (
-        ('Order Information', {
-            'fields': ('order_number', 'user', 'status')
-        }),
-        ('Financial Details', {
-            'fields': ('subtotal', 'shipping_cost', 'total_amount')
-        }),
-        ('Shipping Information', {
-            'fields': ('address',)
-        }),
-        ('Timestamps', {
-            'fields': ('created_at',),
-        }),
-    )
-    
     inlines = [OrderItemInline]
 
     def user_info(self, obj):
-        if obj.user:
+        if obj.address:
+            return f"{obj.address.name} ({obj.address.email if obj.address.email else 'No Email'})"
+        elif obj.user:
             return f"{obj.user.username} ({obj.user.email})"
         return "Guest Order"
     user_info.short_description = "Customer"
@@ -347,7 +318,6 @@ class OrderAdmin(admin.ModelAdmin):
     mark_as_confirmed.short_description = "Mark selected orders as confirmed"
 
     def mark_as_shipped(self, request, queryset):
-        from django.utils import timezone
         orders = queryset.filter(status__in=['confirmed', 'processing'])
         updated = 0
         for order in orders:
@@ -360,7 +330,6 @@ class OrderAdmin(admin.ModelAdmin):
         updated = queryset.filter(status='shipped').update(status='delivered')
         self.message_user(request, f'{updated} orders marked as delivered.')
     mark_as_delivered.short_description = "Mark selected orders as delivered"
-
 
 @admin.register(OrderItem)
 class OrderItemAdmin(admin.ModelAdmin):
@@ -377,8 +346,7 @@ class OrderItemAdmin(admin.ModelAdmin):
         return f"${obj.get_total_price():.2f}"
     item_total.short_description = "Total"
 
-
-# Dashboard customization
+# ---------------- Dashboard customization ----------------
 class EcommerceAdminSite(admin.AdminSite):
     site_header = "Admin Dashboard"
     site_title = "Admin"
@@ -386,34 +354,32 @@ class EcommerceAdminSite(admin.AdminSite):
 
     def index(self, request, extra_context=None):
         extra_context = extra_context or {}
-        
-        # Add dashboard statistics
-        from django.db.models import Sum, Count
         from datetime import datetime, timedelta
-        
-        # Recent statistics
+
         today = datetime.now().date()
         week_ago = today - timedelta(days=7)
-        
+
         stats = {
             'total_products': Product.objects.filter(is_active=True).count(),
-            'low_stock_products': Product.objects.filter(
-                stock_quantity__lt=10, stock_quantity__gt=0, is_active=True
-            ).count(),
-            'out_of_stock_products': Product.objects.filter(
-                stock_quantity=0, is_active=True
-            ).count(),
+            'low_stock_products': Product.objects.filter(stock_quantity__lt=10, stock_quantity__gt=0, is_active=True).count(),
+            'out_of_stock_products': Product.objects.filter(stock_quantity=0, is_active=True).count(),
             'total_orders': Order.objects.count(),
             'pending_orders': Order.objects.filter(status='pending').count(),
             'orders_this_week': Order.objects.filter(created_at__date__gte=week_ago).count(),
             'total_users': User.objects.filter(is_active=True).count(),
-            'active_carts': Cart.objects.filter(
-                items__isnull=False, created_at__date__gte=week_ago
-            ).distinct().count(),
+            'active_carts': Cart.objects.filter(items__isnull=False, created_at__date__gte=week_ago).distinct().count(),
         }
-        
         extra_context['dashboard_stats'] = stats
-        
         return super().index(request, extra_context)
-    
+
+# ---------------- Config model ----------------
 admin.site.register(Config)
+
+# Hide Robots section from admin
+try:
+    from robots.models import Rule
+    admin.site.unregister(Rule)
+except ImportError:
+    pass
+except admin.sites.NotRegistered:
+    pass

@@ -46,6 +46,9 @@ INSTALLED_APPS = [
     # Cloudinary apps
     'cloudinary',
     'cloudinary_storage',
+
+    'colorfield',      
+    'admin_interface', 
 ]
 
 SITE_ID = 1
