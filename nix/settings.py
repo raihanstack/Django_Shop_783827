@@ -19,7 +19,8 @@ DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 ALLOWED_HOSTS = [
     'babyandfashion.vercel.app',
     'localhost',
-    '127.0.0.1'
+    '127.0.0.1',
+    # Add other hosts here if necessary
 ]
 
 CSRF_TRUSTED_ORIGINS = ['https://babyandfashion.vercel.app']
@@ -64,6 +65,11 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+SECURE_HSTS_SECONDS = 31536000  
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+SECURE_SSL_REDIRECT = True
 
 ROOT_URLCONF = 'nix.urls'
 
